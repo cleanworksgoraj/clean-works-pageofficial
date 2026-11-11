@@ -7,12 +7,12 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "CleanWorks | Malowanie i mycie dachów",
   description:
-    "Malowanie i mycie dachów oraz przygotowanie powierzchni. Skontaktuj się z CleanWorks, aby zapytać o wycenę.",
+    "CleanWorks oferuje mycie i malowanie dachów oraz czyszczenie i malowanie elewacji. Skontaktuj się z nami, aby zapytać o bezpłatną wycenę.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="pl">
+    <html lang="pl" data-scroll-behavior="smooth">
       <body>
         <SiteHeader />
         {children}

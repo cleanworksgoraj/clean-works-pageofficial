@@ -18,18 +18,17 @@ export default function BlogPage() {
       />
       <section className="section section-gallery">
         <div className="section-wrap article-grid">
-          {articles.map((article, index) => (
-            <article className="article-card" key={article.slug}>
-              <span className={`article-art article-art-${index + 1}`} aria-hidden="true" />
+          {articles.map((article) => (
+            <Link className="article-card" href={`/blog/${article.slug}`} key={article.slug}>
               <div className="article-card-copy">
                 <span className="article-category">{article.date}</span>
                 <h2>{article.title}</h2>
                 <p>{article.excerpt}</p>
-                <Link className="text-link" href={`/blog/${article.slug}`}>
+                <span className="text-link">
                   Czytaj artykuł <span aria-hidden="true">↗</span>
-                </Link>
+                </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

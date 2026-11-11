@@ -75,7 +75,7 @@ src/
     uslugi/           # lista usług i podstrony poszczególnych usług
     realizacje/       # galeria prac
     blog/             # poradnik i podstrony artykułów
-    o-nas/            # informacje o firmie
+    o-firmie/         # informacje o firmie
     kontakt/          # dane kontaktowe i formularz
     api/contact/      # serwerowa wysyłka formularza przez Resend
   components/
@@ -95,7 +95,7 @@ src/
 - `/uslugi/malowanie-dachow`, `/uslugi/mycie-dachow`, `/uslugi/czyszczenie-elewacji`, `/uslugi/malowanie-elewacji` — opisy usług.
 - `/realizacje` — galeria przykładowych realizacji.
 - `/blog` oraz `/blog/[slug]` — poradnik i artykuły.
-- `/o-nas` — informacje o firmie.
+- `/o-firmie` — informacje o firmie.
 - `/kontakt` — dane kontaktowe i formularz.
 
 ## Co uzupełnić dla klienta
@@ -111,6 +111,21 @@ src/
 
 Hero z wezwaniem do kontaktu, kafle usług, sekcja o firmie, czteroetapowy proces, galeria realizacji, rozwijane FAQ, obszar działania, formularz kontaktowy i wyraźny kontakt telefoniczny.
 
+## Hosting i publikacja
+
+Dla tej aplikacji rekomendowany jest **Vercel** — platforma obsługuje Next.js i endpoint formularza bez potrzeby uruchamiania własnego serwera. Przy stronie publikowanej dla klienta zwróć uwagę na warunki planu: bezpłatny **Hobby** jest przeznaczony wyłącznie do projektów osobistych i niekomercyjnych. Dla komercyjnej strony firmy użyj planu **Pro** lub wybierz inny hosting dopuszczający taki użytek. Aktualne ceny sprawdź na stronie [Vercel Pricing](https://vercel.com/pricing).
+
+Przed wdrożeniem kod powinien być w repozytorium GitHub, GitLab lub Bitbucket:
+
+1. Zaloguj się do [Vercel](https://vercel.com/) i wybierz **Add New → Project**.
+2. Połącz konto z dostawcą Git i zaimportuj repozytorium CleanWorks.
+3. Pozostaw wykryty framework **Next.js** oraz domyślne polecenia builda.
+4. W ustawieniach projektu dodaj zmienne wymagane do wysyłki formularza (opis poniżej), przynajmniej dla środowiska **Production**.
+5. Wybierz **Deploy**. Vercel zbuduje aplikację i udostępni jej adres pod domeną `vercel.app`.
+6. W **Project → Settings → Domains** dodaj domenę klienta. Skopiuj wskazane przez Vercel rekordy DNS do panelu rejestratora domeny; po propagacji Vercel skonfiguruje HTTPS.
+
+Po połączeniu repozytorium kolejne zmiany wypchnięte do gałęzi produkcyjnej będą automatycznie publikowane. Wdrożenia innych gałęzi mogą służyć jako podgląd przed publikacją. Szczegóły: [dokumentacja wdrażania Next.js na Vercel](https://vercel.com/docs/frameworks/full-stack/nextjs), [wdrożenia z Git](https://vercel.com/docs/git) i [własne domeny](https://vercel.com/docs/domains/working-with-domains).
+
 ## Konfiguracja formularza kontaktowego
 
 Wysyłka odbywa się przez API usługi [Resend](https://resend.com/), bez konfiguracji SMTP. Potrzebujesz konta Resend i klucza API. Aby wysyłać wiadomości na `cleanworks.goraj@gmail.com`, zweryfikuj własną domenę nadawcy w Resend i użyj adresu z tej domeny jako `RESEND_FROM`. Sam adres odbiorcy może pozostać adresem Gmail.
@@ -121,13 +136,26 @@ Wysyłka odbywa się przez API usługi [Resend](https://resend.com/), bez konfig
 Copy-Item .env.example .env.local
 ```
 
-2. W panelu Resend utwórz klucz API i wstaw go jako `RESEND_API_KEY` w `.env.local`.
-3. Po zweryfikowaniu domeny ustaw `RESEND_FROM`, np. `CleanWorks <formularz@twojadomena.pl>`. Zastąp `twojadomena.pl` własną domeną zweryfikowaną w Resend.
-4. `CONTACT_TO` określa adres, na który mają przychodzić wiadomości. Domyślnie jest to `cleanworks.goraj@gmail.com`.
-5. Uruchom ponownie serwer developerski po zmianie `.env.local`:
+2. W panelu [Resend Domains](https://resend.com/domains) dodaj domenę, do której klient ma dostęp DNS. Najlepiej użyć osobnej subdomeny do wysyłki, np. `mail.twojadomena.pl`.
+3. Resend pokaże wymagane rekordy DNS (np. DKIM i SPF). Dodaj je dokładnie w panelu DNS domeny i poczekaj, aż Resend oznaczy domenę jako zweryfikowaną. Nie usuwaj ani nie zastępuj istniejących rekordów MX poczty klienta. Jeśli domena ma już rekord SPF, zaktualizuj go zgodnie z instrukcją dostawcy DNS — domena powinna mieć tylko jeden rekord SPF.
+4. W Resend utwórz klucz API. Nie udostępniaj go publicznie ani nie umieszczaj w kodzie.
+5. Ustaw wartości:
+
+   | Zmienna | Wartość |
+   | --- | --- |
+   | `RESEND_API_KEY` | Klucz API utworzony w Resend; sekret. |
+   | `RESEND_FROM` | Nadawca z domeny zweryfikowanej w Resend, np. `CleanWorks <formularz@mail.twojadomena.pl>`. |
+   | `CONTACT_TO` | Adres odbiorczy; domyślnie `cleanworks.goraj@gmail.com`. |
+
+   `.env.example` pokazuje format. Zastąp przykładowy klucz i domenę prawdziwymi danymi lokalnie w `.env.local`.
+
+6. Na Vercel otwórz **Project → Settings → Environment Variables** i dodaj te same trzy zmienne dla **Production** (opcjonalnie także **Preview**, jeśli formularz ma działać na podglądach). Po zmianie zmiennych wykonaj nowe wdrożenie — istniejący deployment nie pobiera ich automatycznie.
+7. Wyślij testowe zgłoszenie z formularza na opublikowanej stronie i sprawdź odbiór w skrzynce oraz logi funkcji w panelu Vercel.
+
+Lokalnie uruchom ponownie serwer developerski po zmianie `.env.local`:
 
 ```powershell
 npm run dev
 ```
 
-`.env.local` zawiera sekret i nie wolno go dodawać do repozytorium. W hostingu produkcyjnym ustaw `RESEND_API_KEY`, `RESEND_FROM` i `CONTACT_TO` w panelu zmiennych środowiskowych hostingu, a nie w kodzie. Bez prawidłowych ustawień formularz pokaże informację o braku konfiguracji, a wysyłka nie zostanie potwierdzona.
+`.env.local` zawiera sekret i nie wolno go dodawać do repozytorium. W hostingu produkcyjnym ustaw `RESEND_API_KEY`, `RESEND_FROM` i `CONTACT_TO` w panelu zmiennych środowiskowych hostingu, a nie w kodzie. Bez prawidłowej konfiguracji formularz nie wyśle wiadomości i pokaże informację o problemie. Wymagania Resend opisuje [dokumentacja domen i ich weryfikacji](https://resend.com/docs/dashboard/domains/introduction).

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { businessPhone } from "@/data/site";
 import Link from "next/link";
+import { HomeLogoLink } from "@/components/home-logo-link";
 
 export function SiteHeader() {
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -35,13 +36,12 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <Link className="brand" href="/" aria-label="CleanWorks — strona główna">
-          <svg className="brand-mark" viewBox="0 0 48 36" aria-hidden="true">
-            <path d="M2 25 14 13l8 7L34 7l12 18h-9l-5-8-10 9-8-7-7 7H2Z" />
-            <path d="M8 29h32M15 25v-5m19 5v-6" fill="none" stroke="currentColor" strokeWidth="1.7" />
-          </svg>
-          <span>CLEAN <span>WORKS</span></span>
-        </Link>
+        <HomeLogoLink
+          className="brand"
+          imageClassName="brand-logo"
+          imageSrc="/cleanworks-logo-transparent.png"
+          label="CleanWorks — strona główna"
+        />
         <nav className="main-nav" aria-label="Nawigacja główna">
           <Link className="nav-home-link" href="/" onClick={closeMenu}>Strona główna</Link>
           <div className="nav-dropdown" ref={servicesRef}>
@@ -71,7 +71,7 @@ export function SiteHeader() {
           </div>
           <Link href="/realizacje" onClick={closeMenu}>Realizacje</Link>
           <Link href="/blog" onClick={closeMenu}>Blog</Link>
-          <Link href="/o-nas" onClick={closeMenu}>O nas</Link>
+          <Link href="/o-firmie" onClick={closeMenu}>O Firmie</Link>
           <Link href="/kontakt" onClick={closeMenu}>Kontakt</Link>
         </nav>
         <a className="header-contact" href={businessPhone.href} aria-label={`Zadzwoń: ${businessPhone.display}`}>

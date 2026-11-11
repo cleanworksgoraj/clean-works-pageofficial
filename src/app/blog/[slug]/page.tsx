@@ -29,12 +29,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) notFound();
 
   return (
-    <main>
+    <main className="article-page">
       <PageIntro eyebrow={article.date.toUpperCase()} title={article.title} description={article.excerpt} />
       <article className="section article-content-wrap">
-        <div className="article-content">
-          {article.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-          <Link className="detail-back-link" href="/blog">← Wróć do poradnika</Link>
+        <div className="section-wrap">
+          <div className="article-content">
+            {article.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            <Link className="detail-back-link" href="/blog">← Wróć do poradnika</Link>
+          </div>
         </div>
       </article>
     </main>

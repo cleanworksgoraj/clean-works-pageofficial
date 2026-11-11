@@ -1,5 +1,5 @@
 type PageIntroProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description: string;
 };
@@ -7,7 +7,7 @@ type PageIntroProps = {
 export function PageIntro({ eyebrow, title, description }: PageIntroProps) {
   return (
     <section className="page-intro section-wrap">
-      <p className="eyebrow">{eyebrow}</p>
+      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
       <h1>{title}</h1>
       <p>{description}</p>
     </section>
